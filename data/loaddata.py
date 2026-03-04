@@ -1,5 +1,11 @@
 import pandas as pd
 import os
+import sys
+
+# 为了确保在不同层级目录下运行都能找到 config.py
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from config import PROCESSED_PATH, RAW_PATH
+
 
 class BasicInfo:
     """股票基本信息类"""
@@ -8,11 +14,11 @@ class BasicInfo:
         self.data = None
 
     def load(self):
-        file_path = r'C:\Users\29967\Desktop\选股软件\data\processed\stock_basic.csv'
+        file_path = os.path.join(PROCESSED_PATH, 'stock_basic.csv')
         if os.path.exists(file_path):
             self.data = pd.read_csv(file_path)
         else:
-            print("Basic info file not found")
+            print(f"Basic info file not found at: {file_path}")
         return self.data
 
 
@@ -23,11 +29,11 @@ class StockIndustry:
         self.data = None
 
     def load(self):
-        file_path = r'C:\Users\29967\Desktop\选股软件\data\processed\stock_industry.csv'
+        file_path = os.path.join(PROCESSED_PATH, 'stock_industry.csv')
         if os.path.exists(file_path):
             self.data = pd.read_csv(file_path)
         else:
-            print("Stock industry file not found")
+            print(f"Stock industry file not found at: {file_path}")
         return self.data
 
 
@@ -38,11 +44,11 @@ class DailyIndex:
         self.data = None
 
     def load(self):
-        file_path = r'C:\Users\29967\Desktop\选股软件\data\processed\index.csv'
+        file_path = os.path.join(PROCESSED_PATH, 'index.csv')
         if os.path.exists(file_path):
             self.data = pd.read_csv(file_path, index_col=0)
         else:
-            print("Daily index file not found")
+            print(f"Daily index file not found at: {file_path}")
         return self.data
 
 
@@ -65,11 +71,11 @@ class PV:
                       "change", "pct_chg", "vol", "amount"]
 
         for data_type in data_types:
-            file_path = f'C:/Users/29967/Desktop/选股软件/data/processed/daily_{data_type}.csv'
+            file_path = os.path.join(RAW_PATH, f'daily_{data_type}.csv')
             if os.path.exists(file_path):
                 setattr(self, data_type, pd.read_csv(file_path, index_col=0))
             else:
-                print(f"Daily PV {data_type} file not found")
+                print(f"Daily PV {data_type} file not found at: {file_path}")
         return self
 
 
@@ -115,11 +121,11 @@ class DailyMoneyflow:
         ]
 
         for data_type in data_types:
-            file_path = f'C:/Users/29967/Desktop/选股软件/data/processed/moneyflow_{data_type}.csv'
+            file_path = os.path.join(PROCESSED_PATH, f'moneyflow_{data_type}.csv')
             if os.path.exists(file_path):
                 setattr(self, data_type, pd.read_csv(file_path, index_col=0))
             else:
-                print(f"Moneyflow {data_type} file not found")
+                print(f"Moneyflow {data_type} file not found at: {file_path}")
         return self
 
 
@@ -130,11 +136,11 @@ class AdjustFactor:
         self.data = None
 
     def load(self):
-        file_path = r'C:\Users\29967\Desktop\选股软件\data\processed\daily_adj_factor.csv'
+        file_path = os.path.join(PROCESSED_PATH, 'daily_adj_factor.csv')
         if os.path.exists(file_path):
             self.data = pd.read_csv(file_path, index_col=0)
         else:
-            print("Adjust factor file not found")
+            print(f"Adjust factor file not found at: {file_path}")
         return self.data
 
 
@@ -157,11 +163,12 @@ class DailyAdjustPV:
                       "change", "pct_chg", "vol", "amount"]
 
         for data_type in data_types:
-            file_path = f'C:/Users/29967/Desktop/选股软件/data/processed/daily_{data_type}_adjust.csv'
+            # 兼容复权后数据的命名格式
+            file_path = os.path.join(PROCESSED_PATH, f'daily_{data_type}_adjust.csv')
             if os.path.exists(file_path):
                 setattr(self, data_type, pd.read_csv(file_path, index_col=0))
             else:
-                print(f"Daily adjust PV {data_type} file not found")
+                print(f"Daily adjust PV {data_type} file not found at: {file_path}")
         return self
 
 
@@ -187,5 +194,3 @@ class StockData:
         self.AdjustFactor.load()
         self.DailyAdjust.load_all()
         return self
-
-
